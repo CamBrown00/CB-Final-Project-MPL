@@ -15,7 +15,7 @@ int main() {
         writeToFile(filename, getUserChoice("Why is the sky blue? ")) &&
         writeToFile(filename, getUserChoice("How do you like your coffee? "))) {
         cout << "Your answers have been recorded! Let's compute some magic." << endl;
-        system("python3 letterHistogram.py");
+        system("letterHistogram.py");
     } else {
         cout << "Oops, something went wrong!" << endl;
     }
@@ -35,6 +35,7 @@ string getUserChoice(string prompt) {
 bool writeToFile(string filename, string message) {
     ofstream outFile(filename, ios::app);
     if (outFile) {
+        cout << message << endl;
         outFile << message << endl;
         outFile.close();
         return true;

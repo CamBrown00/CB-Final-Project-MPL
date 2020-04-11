@@ -3,4 +3,4 @@ project(CB_Final_Project_MPL)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(CB_Final_Project_MPL main.cpp)
+add_executable(CB_Final_Project_MPL main.cpp answers.txt)
