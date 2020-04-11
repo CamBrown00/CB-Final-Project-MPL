@@ -1,42 +1,53 @@
 #include <fstream>
 #include <iostream>
+#include <vector>
 using namespace std;
 
 string getUserChoice(string prompt);
-bool writeToFile(string filename, string message);
+bool writeToFile(string filename, string input);
 void clearFile(string filename);
 
 int main() {
-    cout << "Welcome to the fun questionnaire!" << endl;
+    cout << "Welcome to the statistics calculator!" << endl;
+    cout << "Please enter the numerical data in the random sample" << endl;
+    cout << "Enter any positive or negative number, or 'e' to conclude entering data" << endl;
     string filename = "answers.txt";
-    if (writeToFile(filename, getUserChoice("What is your favorite color? ")) &&
-        writeToFile(filename, getUserChoice("Who do you admire? ")) &&
-        writeToFile(filename, getUserChoice("Where would you want to travel? ")) &&
-        writeToFile(filename, getUserChoice("Why is the sky blue? ")) &&
-        writeToFile(filename, getUserChoice("How do you like your coffee? "))) {
-        cout << "Your answers have been recorded! Let's compute some magic." << endl;
-        system("letterHistogram.py");
-    } else {
-        cout << "Oops, something went wrong!" << endl;
-    }
 
-    clearFile(filename);
+    string input;
+    while (input != "e") {
+        input = getUserChoice("Enter the next number (or 'e'): ");
+        if (!(input == "e")) {
+            if (!writeToFile(filename, input)) {
+                cout << "ERROR: " << filename << " could not be written to, terminating program." << endl;
+                input = "e";
+            }
+        }
+    }
+    cout << "The data for the sample has been entered, computing statistics..." << endl;
+    system("letterHistogram.py");
+    //clearFile(filename);
 
     return 0;
 }
 
 string getUserChoice(string prompt) {
+    int answer = 0;
+    string junk;
     cout << prompt;
-    string answer;
-    getline(cin, answer);
-    return answer;
+    while (!(cin >> answer)) {
+        cin.clear();
+        getline(cin, junk);
+        if (junk == "e") {
+            return junk;
+        }
+    }
+    return to_string(answer);
 }
 
-bool writeToFile(string filename, string message) {
+bool writeToFile(string filename, string input) {
     ofstream outFile(filename, ios::app);
     if (outFile) {
-        cout << message << endl;
-        outFile << message << endl;
+        outFile << input << endl;
         outFile.close();
         return true;
     }

@@ -7,7 +7,7 @@ for i in range(26):
     letterCounts.append(0)
     letters.append(chr(ord('a') + i))
 
-# Open the csv file
+# Open the txt file
 with open('answers.txt') as file:
     for line in file:
         for letter in line:
