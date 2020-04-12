@@ -9,7 +9,7 @@ void clearFile(string filename);
 
 int main() {
     cout << "Welcome to the statistics calculator!" << endl;
-    cout << "Please enter the numerical data in the random sample" << endl;
+    cout << "Please enter the numerical data in the sample" << endl;
     cout << "Enter any positive or negative number, or 'e' to conclude entering data" << endl;
     string filename = "data.txt";
     clearFile(filename);
@@ -33,14 +33,15 @@ int main() {
         cout << "\nWhich graph/chart would you like to display?" << endl;
         cout << "Line graph(1) Pie Chart(2) Histogram(3) Pareto Chart(4) Box-plot(5) End Program(e)" << endl;
         choice = getUserInputInRange("Please enter your choice: ", 5, 1);
-        writeToFile(filename, choice);
         if (choice != "e") {
+            writeToFile(filename, choice);
             cout << "\nThe data for the sample has been entered, computing statistics..." << endl;
             system("computeSampleStats.py");
         } else {
             cout << "\nTerminating program, bye!" << endl;
         }
     }
+    clearFile(filename);
 
     return 0;
 }

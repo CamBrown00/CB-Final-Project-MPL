@@ -8,8 +8,13 @@ def main():
     data = readIntsFromFile("data.txt")
     choice = data[-1]-1
     del data[-1]
-    print("Sample Data: ", end="")
-    print(data)
+    removeChoice("data.txt")
+
+    # Display sorted data list
+    tempData = data
+    tempData.sort()
+    print("Sorted Data: ", end="")
+    print(tempData)
 
     # Calculate mean, median, mode
     print("Mean: ", end="")
@@ -28,7 +33,7 @@ def main():
     print("\n")
 
     # Generate graph of choice
-    graphFunctions = [generateLineGraph, generatePieChart, generateHistogram]
+    graphFunctions = [generateLineGraph, generatePieChart, generateHistogram, generateParetoChart, generateBoxPlot]
 
     if choice < len(graphFunctions) and choice >= 0:
         graphFunctions[choice](data)
@@ -42,6 +47,14 @@ def readIntsFromFile(filename):
             line = line.strip("\n")
             data.append(int(line))
     return data
+
+def removeChoice(filename):
+    readFile = open(filename)
+    fileLines = readFile.readlines()
+    readFile.close()
+    writeFile = open(filename,'w')
+    writeFile.writelines([item for item in fileLines[:-1]])
+    writeFile.close()
 
 def getFrequencyLists(data):
     # Return lists containing frequencies of values, and each unique value
@@ -97,12 +110,13 @@ def calculateVariance(data):
     return variance
 
 def generateLineGraph(data):
-    print(data)
     # Generate line graph using sorted sample data
     tempData = data
     tempData.sort()
     x = [item for item in range(1, len(tempData)+1)]
     y = tempData
+    plt.gcf().canvas.set_window_title('Sample Data Line Graph')
+    plt.title('Sample Data Line Graph')
     plt.plot(x,y, 'bo')
     plt.plot(x,y)
     plt.xlabel("Value ID's")
@@ -147,9 +161,51 @@ def generateHistogram(data):
     plt.show()
 
 def generateBoxPlot(data):
+    # Generate box-plot for sample data
     fig1, ax1 = plt.subplots()
-    ax1.set_title('Box-Plot of Sample Data')
+    ax1.set_title("Plot of Sample Data")
     ax1.boxplot(data)
+    plt.show()
+
+def generateParetoChart(data):
+    cumulativeFrequencies = []
+    percentages = []
+    frequencies, values = getFrequencyLists(data)
+
+    cumulativeFrequency = 0
+    totalFrequency = 0
+    for frequency in frequencies:
+        totalFrequency += frequency
+
+    # Get percentages from frequencies
+    for i in range(0, len(frequencies)):
+        percentages.append(round(frequencies[i]/totalFrequency, 2) * 100)
+
+    # Get cumulative frequencies
+    for percentage in percentages:
+        cumulativeFrequency += percentage
+        cumulativeFrequencies.append(cumulativeFrequency)
+            
+    # Reverse data in lists for pareto
+    values.sort(reverse = True)
+    frequencies.sort(reverse = True)
+        
+    # Create modified bar-chart
+    ax = plt.subplot(111)
+    ax.bar(values, frequencies)
+    ax.set_xlim(max(values)+1, min(values)-1)
+    yint = range(min(frequencies), max(frequencies)+1)
+    plt.yticks(yint)
+    plt.gcf().canvas.set_window_title("Sample Data Pareto Chart")
+    plt.title("Sample Data Pareto Chart")
+    plt.xlabel("Value")
+    plt.ylabel("Frequency", color="b")
+    ax2 = ax.twinx()
+    ax2.set_ylabel("Percentage", color="r")
+    ax2.set_ylim(0, 100)
+    plt.plot(values, cumulativeFrequencies, "ro")
+    plt.plot(values, cumulativeFrequencies, "r")
+    plt.show()
 
 main()
 
