@@ -21,13 +21,17 @@ def main():
     print("\n")
 
     # Calculate standard deviation, variance
+    print("Standard Deviation: ", end="")
+    print(round(calculateStandardDeviation(data), 4), end="\t")
+    print("Variance: ", end="")
+    print(round(calculateVariance(data), 4), end="\t")
+    print("\n")
 
     # Generate graph of choice
-    graphFunctions = [generatePieChart, generateHistogram]
+    graphFunctions = [generateLineGraph, generatePieChart, generateHistogram]
 
     if choice < len(graphFunctions) and choice >= 0:
         graphFunctions[choice](data)
-    graphFunctions[0](data)
 
 
 def readIntsFromFile(filename):
@@ -77,6 +81,34 @@ def calculateMode(data):
     frequencies, values = getFrequencyLists(data)
     return  values[frequencies.index(max(frequencies))]
 
+def calculateStandardDeviation(data):
+    # Calculate the sqrt of each value minus the mean, squared, divided by len(data)
+    mean = calculateMean(data)
+    standardDeviation = 0
+    for value in data:
+        standardDeviation += (abs(value - mean))**2
+
+    standardDeviation = math.sqrt(standardDeviation/(len(data)-1))
+    return standardDeviation
+
+def calculateVariance(data):
+    # Calculate the standard deviation squared
+    variance = calculateStandardDeviation(data)**2
+    return variance
+
+def generateLineGraph(data):
+    print(data)
+    # Generate line graph using sorted sample data
+    tempData = data
+    tempData.sort()
+    x = [item for item in range(1, len(tempData)+1)]
+    y = tempData
+    plt.plot(x,y, 'bo')
+    plt.plot(x,y)
+    plt.xlabel("Value ID's")
+    plt.ylabel("Values")
+    plt.show()
+
 def generatePieChart(data):
     # Generate pie chart using the value and frequency lists
     frequencies, values = getFrequencyLists(data)
@@ -84,7 +116,7 @@ def generatePieChart(data):
     sizes = frequencies
 
     fig1, ax1 = plt.subplots()
-    ax1.pie(sizes, labels=labels, autopct='%1.1f%%', shadow=True, startangle=90)
+    ax1.pie(sizes, labels=labels, autopct='%1.1f%%', shadow=False, startangle=90)
     ax1.axis('equal')
     plt.show()
 
@@ -113,6 +145,11 @@ def generateHistogram(data):
     plt.ylabel('Frequency')
     # Display the graph in a new window
     plt.show()
+
+def generateBoxPlot(data):
+    fig1, ax1 = plt.subplots()
+    ax1.set_title('Box-Plot of Sample Data')
+    ax1.boxplot(data)
 
 main()
 
