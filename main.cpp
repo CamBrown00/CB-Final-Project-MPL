@@ -3,7 +3,7 @@
 #include <vector>
 using namespace std;
 
-string getUserChoice(string prompt);
+string getUserInput(string prompt);
 bool writeToFile(string filename, string input);
 void clearFile(string filename);
 
@@ -11,11 +11,12 @@ int main() {
     cout << "Welcome to the statistics calculator!" << endl;
     cout << "Please enter the numerical data in the random sample" << endl;
     cout << "Enter any positive or negative number, or 'e' to conclude entering data" << endl;
-    string filename = "answers.txt";
+    string filename = "../answers.txt";
+    clearFile(filename);
 
     string input;
     while (input != "e") {
-        input = getUserChoice("Enter the next number (or 'e'): ");
+        input = getUserInput("Enter the next number (or 'e'): ");
         if (!(input == "e")) {
             if (!writeToFile(filename, input)) {
                 cout << "ERROR: " << filename << " could not be written to, terminating program." << endl;
@@ -23,14 +24,17 @@ int main() {
             }
         }
     }
-    cout << "The data for the sample has been entered, computing statistics..." << endl;
+    cout << "\nWhich graph/chart would you like to display?" << endl;
+    cout << "Line graph(1) Pie Chart(2) Histogram(3) Pareto Chart(4) Box-plot(5) End Program(e)" << endl;
+    writeToFile(filename, getUserInput("Please enter your choice: "));
+    cout << "\nThe data for the sample has been entered, computing statistics..." << endl;
+
     system("letterHistogram.py");
-    //clearFile(filename);
 
     return 0;
 }
 
-string getUserChoice(string prompt) {
+string getUserInput(string prompt) {
     int answer = 0;
     string junk;
     cout << prompt;
